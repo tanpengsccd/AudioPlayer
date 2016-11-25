@@ -19,7 +19,8 @@ private extension AVPlayer {
             "currentItem.playbackLikelyToKeepUp",
             "currentItem.duration",
             "currentItem.status",
-            "currentItem.loadedTimeRanges"]
+            "currentItem.loadedTimeRanges",
+            "currentItem.timedMetadata"]
     }
 }
 
@@ -109,24 +110,24 @@ class PlayerEventProducer: NSObject, EventProducer {
             center.addObserver(self,
                 selector: .audioSessionInterrupted,
                 name: .AVAudioSessionInterruption,
-                object: player)
+                object: nil)
             center.addObserver(
                 self,
                 selector: .audioRouteChanged,
                 name: .AVAudioSessionRouteChange,
-                object: player)
+                object: nil)
             center.addObserver(
                 self,
                 selector: .audioSessionMessedUp,
                 name: .AVAudioSessionMediaServicesWereLost,
-                object: player)
+                object: nil)
             center.addObserver(
                 self,
                 selector: .audioSessionMessedUp,
                 name: .AVAudioSessionMediaServicesWereReset,
-                object: player)
+                object: nil)
         #endif
-        center.addObserver(self, selector: .itemDidEnd, name: .AVPlayerItemDidPlayToEndTime, object: player)
+        center.addObserver(self, selector: .itemDidEnd, name: .AVPlayerItemDidPlayToEndTime, object: player.currentItem)
 
         //Observing AVPlayer's property
         for keyPath in AVPlayer.ap_KVOProperties {
@@ -152,12 +153,12 @@ class PlayerEventProducer: NSObject, EventProducer {
         //Unobserving notifications sent through `NSNotificationCenter`
         let center = NotificationCenter.default
         #if os(iOS) || os(tvOS)
-            center.removeObserver(self, name: .AVAudioSessionInterruption, object: player)
-            center.removeObserver(self, name: .AVAudioSessionRouteChange, object: player)
-            center.removeObserver(self, name: .AVAudioSessionMediaServicesWereLost, object: player)
-            center.removeObserver(self, name: .AVAudioSessionMediaServicesWereReset, object: player)
+            center.removeObserver(self, name: .AVAudioSessionInterruption, object: nil)
+            center.removeObserver(self, name: .AVAudioSessionRouteChange, object: nil)
+            center.removeObserver(self, name: .AVAudioSessionMediaServicesWereLost, object: nil)
+            center.removeObserver(self, name: .AVAudioSessionMediaServicesWereReset, object: nil)
         #endif
-        center.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: player)
+        center.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: player.currentItem)
 
         //Unobserving AVPlayer's property
         for keyPath in AVPlayer.ap_KVOProperties {
@@ -210,6 +211,11 @@ class PlayerEventProducer: NSObject, EventProducer {
                 if let range = currentItem.loadedTimeRanges.last?.timeRangeValue {
                     eventListener?.onEvent(
                         PlayerEvent.loadedMoreRange(range.start, range.end), generetedBy: self)
+                }
+            
+            case "currentItem.timedMetadata":
+                if let metadata = currentItem.timedMetadata {
+                    eventListener?.onEvent(PlayerEvent.loadedMetadata(metadata), generetedBy: self)
                 }
 
             default:

@@ -74,7 +74,7 @@ public protocol AudioPlayerDelegate: class {
     func audioPlayer(_ audioPlayer: AudioPlayer, didLoad range: TimeRange, for item: AudioItem)
 }
 
-extension AudioPlayerDelegate {
+public extension AudioPlayerDelegate {
     func audioPlayer(_ audioPlayer: AudioPlayer, didChangeStateFrom from: AudioPlayerState,
                      to state: AudioPlayerState) {
     }

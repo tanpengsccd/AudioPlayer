@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.source        =  { :git => 'https://github.com/delannoyk/AudioPlayer.git', :tag => s.version.to_s }
   s.source_files  = 'AudioPlayer/AudioPlayer/**/*.swift'
   s.requires_arc  = true
-  s.swift_version = '4.0' # only for lint
+  s.swift_version = '3.2' # only for lint
   s.ios.deployment_target = '8.0'
   s.ios.framework = 'UIKit', 'AVFoundation', 'MediaPlayer', 'SystemConfiguration'
 

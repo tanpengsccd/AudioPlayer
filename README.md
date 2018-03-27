@@ -18,6 +18,15 @@ AudioPlayer is a wrapper around AVPlayer. It also offers cool features such as:
 ## Installation
 
 * CocoaPods: `pod 'KDEAudioPlayer'`
+```
+if  target.name == 'KDEAudioPlayer'
+    print "Changing Quick Nimble swift version to 3.2\n"
+    target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '3.2'
+    end
+end
+```
+
 * Carthage: `github "delannoyk/AudioPlayer"`
 
 ## Usage
